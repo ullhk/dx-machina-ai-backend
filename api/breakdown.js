@@ -39,8 +39,9 @@ export default async function handler(req, res) {
 
     const summary = completion.choices[0]?.message?.content?.trim() || "[No response]";
     res.status(200).json({ summary });
-  } catch (err) {
-    console.error("❌ AI error:", err);
-    res.status(500).json({ summary: "[AI error]" });
-  }
+ } catch (err) {
+  console.error("❌ OpenAI error:", err.response?.data || err.message || err);
+  const message = err.response?.data?.error?.message || err.message || "[AI error]";
+  res.status(500).json({ summary: message });
+}
 }
